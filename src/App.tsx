@@ -2,9 +2,10 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import env from './env'
 
-const mqttUser = import.meta.env.VITE_MQTT_USER;
-const mqttPassword = import.meta.env.VITE_MQTT_PASSWORD;
+const mqttUser = env.MQTT_USER;
+const mqttPassword = env.MQTT_PASSWORD;
 
 function App() {
   const [count, setCount] = useState(0)
