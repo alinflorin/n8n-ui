@@ -1,0 +1,72 @@
+name: "CI/CD"
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: "Run in test mode (deploy to test endpoint)?"
+        required: false
+        default: false
+        type: boolean
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Zip dist folder
+        run: |
+          cd dist
+          zip -r ../dist.zip .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist.zip
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: n8n
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+
+      - name: Set webhook URL
+        id: webhook
+        run: |
+          if [[ "${{ github.event.inputs.test_mode }}" == "true" ]]; then
+            echo "url=https://n8n-public.huna2.com/webhook-test/ui/deploy" >> "$GITHUB_OUTPUT"
+          else
+            echo "url=https://n8n-public.huna2.com/webhook/ui/deploy" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to n8n via cURL
+        run: |
+          echo "Deploying dist.zip to ${{ steps.webhook.outputs.url }}..."
+          curl -X POST ${{ steps.webhook.outputs.url }} \
+            -H "Authorization: Bearer ${{ secrets.N8N_TOKEN }}" \
+            -F "file=@dist.zip" \
+            -H "Content-Type: multipart/form-data"
