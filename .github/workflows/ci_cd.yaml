@@ -65,8 +65,19 @@ jobs:
 
       - name: Deploy to n8n via cURL
         run: |
+          set -e
+            
           echo "Deploying dist.zip to ${{ steps.webhook.outputs.url }}..."
-          curl -X POST ${{ steps.webhook.outputs.url }} \
+          response=$(curl -s -o response.log -w "%{http_code}" \
+            -X POST ${{ steps.webhook.outputs.url }} \
             -H "Authorization: Bearer ${{ secrets.N8N_TOKEN }}" \
-            -F "file=@dist.zip" \
-            -H "Content-Type: multipart/form-data"
+            --data-binary @dist.zip)
+            
+          if [[ "$response" -ne 200 ]]; then
+            echo "❌ Deployment failed with HTTP $response"
+            echo "Response body:"
+            cat response.log
+            exit 1
+          else
+            echo "✅ Deployment succeeded."
+          fi
