@@ -5,12 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      test_mode:
-        description: "Run in test mode (deploy to test endpoint)?"
-        required: false
-        default: false
-        type: boolean
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,22 +48,13 @@ jobs:
           name: dist
           path: .
 
-      - name: Set webhook URL
-        id: webhook
-        run: |
-          if [[ "${{ github.event.inputs.test_mode }}" == "true" ]]; then
-            echo "url=https://n8n-public.huna2.com/webhook-test/ui/deploy" >> "$GITHUB_OUTPUT"
-          else
-            echo "url=https://n8n-public.huna2.com/webhook/ui/deploy" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Deploy to n8n via cURL
         run: |
           set -e
               
-          echo "Deploying dist.zip to ${{ steps.webhook.outputs.url }}..."
+          echo "Deploying dist.zip to n8n..."
           response=$(curl -s -o response.log -w "%{http_code}" \
-            -X POST ${{ steps.webhook.outputs.url }} \
+            -X POST https://n8n-public.huna2.com/webhook/ui/deploy \
             -H "Authorization: Bearer ${{ secrets.N8N_TOKEN }}" \
             -F "file=@dist.zip")
               
