@@ -61,7 +61,7 @@ jobs:
 
           echo "Deploying dist.zip to n8n at $DEPLOY_URL..."
           response=$(curl -s -o response.log -w "%{http_code}" \
-            -X POST "${{ env.DEPLOY_URL }}" \
+            -X POST "${{ vars.DEPLOY_URL }}" \
             -H "Authorization: Bearer ${{ secrets.N8N_TOKEN }}" \
             -F "file=@dist.zip")
 
