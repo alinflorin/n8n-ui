@@ -7,6 +7,15 @@ export default defineConfig({
   plugins: [
     react(),
     // viteSingleFile(),
+    {
+      name: 'rewrite-asset-paths-to-query',
+      transformIndexHtml(html) {
+        return html
+          .replace(/(src|href)="\.\/([^"]+)"/g, (_, attr, path) => {
+            return `${attr}="?file=${encodeURIComponent(path)}"`;
+          });
+      },
+    },
     basicSsl({
       name: "test",
     }),
