@@ -26,18 +26,31 @@ export default defineConfig({
             chunk.code &&
             /\.(js|ts)x?$/.test(fileName)
           ) {
-            // Catching all asset URLs, not just from 'assets'
+            // Match both absolute and relative asset paths, ensuring the full path is captured
             chunk.code = chunk.code.replace(
-              /["']\/?([^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot))["']/g,
-              (_, file) => `"\\?file=${file}"`
+              /["'](\/?[^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot))["']/g,
+              (_, filePath) => {
+                // If the path starts with '/', treat it as relative to the current directory
+                let path = filePath.startsWith('/') ? `.${filePath}` : filePath;
+    
+                // If the path starts with './', remove the leading './'
+                if (path.startsWith('./')) {
+                  path = path.substring(2); // Remove the './'
+                }
+    
+                // Ensure proper query string handling (encodeURIComponent for safe URL)
+                return `"\\?file=${encodeURIComponent(path)}"`;
+              }
             );
           }
         }
       },
-    },
+    },    
     basicSsl({
       name: "test",
     }),
   ],
-  base: "./",
+  build: {
+    minify: false
+  }
 });
