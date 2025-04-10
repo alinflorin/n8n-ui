@@ -30,6 +30,7 @@ jobs:
         run: npm run build
 
       - name: Zip dist folder
+        if: github.event_name != 'pull_request'
         run: |
           cd dist
           zip -r ../dist.zip .
