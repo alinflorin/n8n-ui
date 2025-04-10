@@ -16,6 +16,25 @@ export default defineConfig({
           });
       },
     },
+    {
+      name: 'rewrite-tsx-asset-imports',
+      enforce: 'post',
+      generateBundle(_, bundle) {
+        for (const [fileName, chunk] of Object.entries(bundle)) {
+          if (
+            chunk.type === 'chunk' &&
+            chunk.code &&
+            /\.(js|ts)x?$/.test(fileName)
+          ) {
+            // Catching all asset URLs, not just from 'assets'
+            chunk.code = chunk.code.replace(
+              /["']\/?([^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot))["']/g,
+              (_, file) => `"\\?file=${file}"`
+            );
+          }
+        }
+      },
+    },
     basicSsl({
       name: "test",
     }),
