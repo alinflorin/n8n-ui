@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,12 +35,14 @@ jobs:
           zip -r ../dist.zip .
 
       - name: Upload build artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist.zip
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment: n8n
@@ -51,13 +57,13 @@ jobs:
       - name: Deploy to n8n via cURL
         run: |
           set -e
-              
-          echo "Deploying dist.zip to n8n..."
+
+          echo "Deploying dist.zip to n8n at $DEPLOY_URL..."
           response=$(curl -s -o response.log -w "%{http_code}" \
-            -X POST https://n8n-public.huna2.com/webhook/ui/deploy \
+            -X POST "$DEPLOY_URL" \
             -H "Authorization: Bearer ${{ secrets.N8N_TOKEN }}" \
             -F "file=@dist.zip")
-              
+
           if [[ "$response" -ne 200 ]]; then
             echo "❌ Deployment failed with HTTP $response"
             echo "Response body:"
