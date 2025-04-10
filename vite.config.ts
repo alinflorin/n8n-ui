@@ -11,7 +11,7 @@ export default defineConfig({
       name: 'rewrite-asset-paths-to-query',
       transformIndexHtml(html) {
         return html
-          .replace(/(src|href)="\.\/([^"]+)"/g, (_, attr, path) => {
+          .replace(/(src|href)="\/([^"]+)"/g, (_, attr, path) => {
             return `${attr}="?file=${encodeURIComponent(path)}"`;
           });
       },
