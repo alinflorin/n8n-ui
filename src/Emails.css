@@ -1,0 +1,177 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-grid {
+  display: grid;
+  grid-template-rows: 60% 40%;  /* Top row 60%, bottom row 40% */
+  height: 100vh;
+}
+
+/* Top row with two columns */
+.top-row {
+  display: grid;
+  grid-template-columns: 70% 30%; /* Divide top row into two columns */
+  height: 100%;
+}
+
+.first-column {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;  /* Vertical scroll */
+  background-color: #e3f2fd;
+  padding: 20px;
+  gap: 15px;
+  max-height: 100%;  /* Ensure it doesn't overflow */
+}
+
+.first-column::-webkit-scrollbar {
+  width: 8px;
+}
+
+.first-column::-webkit-scrollbar-thumb {
+  background: #90caf9;
+  border-radius: 4px;
+}
+
+.flex-item {
+  background-color: #64b5f6;
+  padding: 20px;
+  border-radius: 8px;
+  min-height: 100px;
+  text-align: center;
+}
+
+.second-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  overflow-y: auto; /* Vertical scroll */
+  background-color: #ffecb3;
+  padding: 20px;
+  max-height: 100%;
+  gap: 15px;
+}
+
+.second-column::-webkit-scrollbar {
+  width: 8px;
+}
+
+.second-column::-webkit-scrollbar-thumb {
+  background: #ffb74d;
+  border-radius: 4px;
+}
+
+/* Bottom row with three columns */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;  /* Three columns */
+  height: 100%;
+  background-color: #ffcc80;
+}
+
+.fixed-column {
+  background-color: #ff5722;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-bottom-column {
+
+  background-color: #ffc107;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .page-grid {
+    grid-template-rows: 60% 40%;  /* Maintain top row 60%, bottom 2 rows 40% */
+  }
+
+  /* Top row */
+  .top-row {
+    grid-template-columns: 1fr; /* Stack columns vertically on mobile */
+    height: auto;
+  }
+
+  .first-column, .second-column {
+    overflow-y: auto; /* Enable vertical scroll for both columns */
+    width: 100%; /* Full width */
+    padding: 10px;
+    max-height: 100%; /* Prevent columns from exceeding the screen */
+  }
+
+  /* Bottom row */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 30% 50% 20%; /* Keep layout for bottom row the same on mobile */
+    height: auto;
+  }
+
+  .fixed-column {
+    width: 100%; /* Full width on mobile */
+    text-align: center;
+    padding: 10px;
+  }
+
+  .flex-bottom-column {
+    width: 100%; /* Full width on mobile */
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+/* Very small screens (phones in portrait mode) */
+@media (max-width: 480px) {
+  /* Top row remains unchanged with two columns stacked */
+  .top-row {
+    grid-template-columns: 1fr;  /* 1 column */
+    grid-template-rows: 50% 50%; /* Split the top row into two sections */
+    height: 100%;
+  }
+
+  .first-column {
+    width: 100%; /* Full width on mobile */
+    height: 100%;
+    overflow-y: auto; /* Enable vertical scroll */
+  }
+
+  .second-column {
+    width: 100%; /* Full width on mobile */
+    height: 100%;
+    overflow-y: auto; /* Enable vertical scroll */
+  }
+
+  /* Bottom row remains as it is */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 30% 50% 20%; /* Keep bottom row layout as it is */
+    height: auto;
+  }
+
+  .fixed-column {
+    width: 100%; /* Full width on mobile */
+    text-align: center;
+    padding: 10px;
+  }
+
+  .flex-bottom-column {
+    width: 100%; /* Full width on mobile */
+    text-align: center;
+    padding: 10px;
+  }
+}
