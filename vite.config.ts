@@ -1,6 +1,7 @@
 import { defineConfig, PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig(({ command }) => {
   const isProd = command === "build";
@@ -45,6 +46,7 @@ export default defineConfig(({ command }) => {
   return {
     plugins: [
       react(),
+      tsconfigPaths(),
       basicSsl(),
       ...prodOnlyPlugins,
     ],

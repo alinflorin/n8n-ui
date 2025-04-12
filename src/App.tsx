@@ -1,14 +1,15 @@
 import { Outlet } from "react-router";
-import env from "./env";
+import { Box, Flex } from "@chakra-ui/react";
+import Footer from "./Footer";
 
 function App() {
   return (
-    <div>
-      <div>
+    <Flex direction="column" h="100%" minH="100vh">
+      <Box flex="auto" minH={0}>
         <Outlet />
-      </div>
-      <div>{env.VERSION}</div>
-    </div>
+      </Box>
+      <Footer />
+    </Flex>
   );
 }
 
