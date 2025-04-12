@@ -7,9 +7,18 @@ import Home from "./Home.tsx";
 import { Provider } from "@/components/ui/provider";
 import AiOffice from "./AiOffice.tsx";
 
+const calculateBasePath = () => {
+  const pathname = window.location.pathname;
+  
+  // You can modify the number of parts here if the base path structure is always known
+  const baseSegments = pathname.split('/').slice(0, 5).join('/');  // Adjust '5' depending on your URL structure
+  
+  return baseSegments;
+};
+
 createRoot(document.getElementById("root")!).render(
   <Provider>
-    <BrowserRouter>
+    <BrowserRouter basename={calculateBasePath()}>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
