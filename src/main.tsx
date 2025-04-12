@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { HashRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 import NotFound from "./NotFound.tsx";
 import Home from "./Home.tsx";
 import { Provider } from "@/components/ui/provider";
@@ -18,7 +18,7 @@ const calculateBasePath = () => {
 
 createRoot(document.getElementById("root")!).render(
   <Provider>
-    <HashRouter basename={calculateBasePath()}>
+    <BrowserRouter basename={calculateBasePath()}>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
@@ -26,6 +26,6 @@ createRoot(document.getElementById("root")!).render(
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   </Provider>
 );
