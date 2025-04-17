@@ -12,20 +12,6 @@ if (import.meta.env.DEV) {
   setupAxiosDevRequestInterceptor();
 }
 
-const calculateBasePath = () => {
-  if (import.meta.env.DEV) {
-    return "/";
-  }
-  const pathname = window.location.pathname;
-  
-  // You can modify the number of parts here if the base path structure is always known
-  const baseSegments = pathname.split('/').slice(0, 5).join('/');  // Adjust '5' depending on your URL structure
-  
-  return baseSegments;
-};
-
-console.log(calculateBasePath);
-
 createRoot(document.getElementById("root")!).render(
   <Provider>
     <HashRouter>
