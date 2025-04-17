@@ -113,6 +113,9 @@ export default function AIOffice() {
                         flexWrap={"wrap"}
                       >
                         <Box textStyle="xs" flex="1">
+                          Sent: {item.sentDate?.toLocaleString()}
+                        </Box>
+                        <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
                         <Box textStyle="xs" flex="1">
@@ -160,6 +163,9 @@ export default function AIOffice() {
                         flex="1"
                         flexWrap={"wrap"}
                       >
+                        <Box textStyle="xs" flex="1">
+                          Sent: {item.sentDate?.toLocaleString()}
+                        </Box>
                         <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
