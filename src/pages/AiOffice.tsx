@@ -18,27 +18,11 @@ import n8nService from "../services/n8n-service";
 
 export default function AIOffice() {
   const [log] = useState<Email[]>([
-    {
-      from: "alin@huna2.com",
-      to: ["alex@huna2.com"],
-      subject: "Hi there",
-      body: "adsasd asd asd asd asdas sd dasd ",
-      sentDate: new Date(),
-      bcc: ["calvin@huna2.com", "dorian@huna2.com"],
-      cc: ["brad@huna2.com"],
-    },
+
   ]);
 
   const [inbox] = useState<Email[]>([
-    {
-      from: "alin@huna2.com",
-      to: ["alex@huna2.com"],
-      subject: "Hi there",
-      body: "adsasd asd asd asd asdas sd dasd ",
-      sentDate: new Date(),
-      bcc: ["calvin@huna2.com", "dorian@huna2.com"],
-      cc: ["brad@huna2.com"],
-    },
+
   ]);
 
   const [allEmails, setAllEmails] = useState<Recipient[]>([
