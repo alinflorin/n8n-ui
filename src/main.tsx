@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { HashRouter, Route, Routes } from "react-router";
 import NotFound from "./NotFound.tsx";
 import Home from "./Home.tsx";
-import { Provider } from "@/components/ui/provider";
+import { Provider } from "@/components/provider.tsx";
 import AiOffice from "./routes/AiOffice.tsx";
 import { setupAxiosDevRequestInterceptor } from "./interceptors/basic-auth-interceptor.ts";
 

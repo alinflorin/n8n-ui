@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import { Box, Flex } from "@chakra-ui/react";
-import Footer from "./Footer";
+import Footer from "./components/Footer";
 
 function App() {
   return (

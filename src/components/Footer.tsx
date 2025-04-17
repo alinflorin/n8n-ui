@@ -1,5 +1,5 @@
 import { Box, Text, Flex, Link as ChakraLink } from "@chakra-ui/react";
-import env from "./env";
+import env from "../env";
 import { Link } from "react-router";
 
 export default function Footer() {

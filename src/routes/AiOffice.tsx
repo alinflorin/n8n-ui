@@ -179,7 +179,7 @@ export default function AIOffice() {
       {/* Bottom Section: Fixed */}
       <Box display="flex" flexDirection={"column"}>
         <Text textStyle="lg">Send Email</Text>
-        <Box display={"flex"} flexDirection={"row"} flex="1">
+        <Box display={"flex"} flexDirection={{base: "column", lg: "row"}} flex="1">
           <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
             <Input
               value={email.subject}
