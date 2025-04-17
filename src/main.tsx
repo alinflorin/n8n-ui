@@ -5,8 +5,8 @@ import { HashRouter, Route, Routes } from "react-router";
 import NotFound from "./NotFound.tsx";
 import Home from "./Home.tsx";
 import { Provider } from "@/components/ui/provider";
+import AiOffice from "./routes/AiOffice.tsx";
 import { setupAxiosDevRequestInterceptor } from "./interceptors/basic-auth-interceptor.ts";
-import { Lazy } from "./components/ui/Lazy.tsx";
 
 if (import.meta.env.DEV) {
   setupAxiosDevRequestInterceptor();
@@ -18,10 +18,7 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
-          <Route
-            path="ai-office"
-            element={<Lazy component={() => import("./routes/AiOffice.tsx")} />}
-          />
+          <Route path="ai-office" element={<AiOffice />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
