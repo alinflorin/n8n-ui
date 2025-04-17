@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 function App() {
   return (
     <Flex direction="column" h="100%" minH="100vh">
-      <Box flex="auto" overflow="auto" minH={0}>
+      <Box display="flex" flex="auto" overflow="auto" minH={0}>
         <Outlet />
       </Box>
       <Footer />

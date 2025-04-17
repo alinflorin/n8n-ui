@@ -107,6 +107,7 @@ export default function AIOffice() {
   return (
     <Flex
       direction="column"
+      flex="1"
       p={4}
       height="100%" // Allow it to fill the available space within the Outlet
       overflow="auto" // Enable scrolling on the container level
