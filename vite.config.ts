@@ -27,7 +27,7 @@ export default defineConfig(({ command }) => {
                 /\.(js|ts)x?$/.test(fileName)
               ) {
                 chunk.code = chunk.code.replace(
-                  /["'](\/?[^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot))["']/g,
+                  /["'](\/?[^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot|js))["']/g,
                   (_, filePath: string) => {
                     let path = filePath.startsWith("/")
                       ? `.${filePath}`
