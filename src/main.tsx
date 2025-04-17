@@ -24,9 +24,11 @@ const calculateBasePath = () => {
   return baseSegments;
 };
 
+console.log(calculateBasePath);
+
 createRoot(document.getElementById("root")!).render(
   <Provider>
-    <HashRouter basename={calculateBasePath()}>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
