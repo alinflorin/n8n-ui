@@ -1,7 +1,7 @@
 import { defineConfig, PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 import basicSsl from "@vitejs/plugin-basic-ssl";
-import tsconfigPaths from "vite-tsconfig-paths"
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(({ command }) => {
   const isProd = command === "build";
@@ -29,7 +29,9 @@ export default defineConfig(({ command }) => {
                 chunk.code = chunk.code.replace(
                   /["'](\/?[^"']+\.(png|jpe?g|gif|svg|webp|css|jpg|mp4|json|woff2?|ttf|otf|eot))["']/g,
                   (_, filePath: string) => {
-                    let path = filePath.startsWith("/") ? `.${filePath}` : filePath;
+                    let path = filePath.startsWith("/")
+                      ? `.${filePath}`
+                      : filePath;
                     if (path.startsWith("./")) {
                       path = path.substring(2);
                     }
@@ -44,14 +46,19 @@ export default defineConfig(({ command }) => {
     : [];
 
   return {
-    plugins: [
-      react(),
-      tsconfigPaths(),
-      basicSsl(),
-      ...prodOnlyPlugins,
-    ],
+    plugins: [react(), tsconfigPaths(), basicSsl(), ...prodOnlyPlugins],
     build: {
       minify: true,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            const match = /src\/routes\/([\w-]+)\//.exec(id);
+            if (match) {
+              return match[1];
+            }
+          },
+        },
+      },
     },
   };
 });
