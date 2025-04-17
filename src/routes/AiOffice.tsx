@@ -104,6 +104,21 @@ export default function AIOffice() {
     });
   }, [email, setEmail]);
 
+  const populateReply = useCallback((old: Email) => {
+    setEmail(e => ({...e, subject: 'Re: ' + old.subject, to: [old.from], cc: old.cc, bcc: old.bcc}));
+  }, [setEmail]);
+
+  const clearForm = useCallback(() => {
+    setEmail({
+      from: "alin@huna2.com",
+      subject: "",
+      bcc: [],
+      body: "",
+      cc: [],
+      to: [],
+    });
+  }, [setEmail]);
+
   return (
     <Flex
       direction="column"
@@ -179,7 +194,7 @@ export default function AIOffice() {
             <Accordion.Root collapsible>
               {inbox.map((item, index) => (
                 <Accordion.Item key={index} value={index + ""}>
-                  <Accordion.ItemTrigger>
+                  <Accordion.ItemTrigger onDoubleClick={() => populateReply(item)}>
                     <Box flex="1">
                       <Span fontWeight="bold" flex="1">
                         {item.subject}
@@ -351,6 +366,13 @@ export default function AIOffice() {
               flex="1"
             >
               Send
+            </Button>
+            <Button
+              onClick={clearForm}
+              width="100%"
+              flex="1"
+            >
+              Clear
             </Button>
           </Box>
         </Box>
