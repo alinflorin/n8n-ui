@@ -10,24 +10,19 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Accordion } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Email } from "../models/email";
 import { Input } from "@chakra-ui/react";
 import { Recipient } from "../models/recipient";
 import n8nService from "../services/n8n-service";
+import mqttService from "@/services/mqtt-service";
 
 export default function AIOffice() {
-  const [log] = useState<Email[]>([
+  const [log, setLog] = useState<Email[]>([]);
 
-  ]);
+  const [inbox, setInbox] = useState<Email[]>([]);
 
-  const [inbox] = useState<Email[]>([
-
-  ]);
-
-  const [allEmails, setAllEmails] = useState<Recipient[]>([
-
-  ]);
+  const [allEmails, setAllEmails] = useState<Recipient[]>([]);
 
   const allEmailsListCollection = useMemo(() => {
     return createListCollection({
@@ -37,7 +32,6 @@ export default function AIOffice() {
 
   const [email, setEmail] = useState<Email>({
     from: "alin@huna2.com",
-    sentDate: new Date(),
     subject: "",
     bcc: [],
     body: "",
@@ -49,16 +43,57 @@ export default function AIOffice() {
     (async () => {
       const emails = await n8nService.getAllEmails();
       setAllEmails(emails);
-    })();
-  }, []);
 
+      await mqttService.connect();
+      await mqttService.subscribe("office/outbox", 2);
+
+      mqttService.consumeMessages(async (topic, msg, err) => {
+        if (!msg && err) {
+          alert(err);
+          return;
+        }
+        if (topic === "office/outbox") {
+          setLog((st) => [...st, msg as Email]);
+          return;
+        }
+        if (topic === "office/inboxes/alin@huna2.com") {
+          setInbox((st) => [...st, msg as Email]);
+          return;
+        }
+      });
+    })();
+
+    return () => {
+      (async () => {
+        await mqttService.disconnect();
+      })();
+    };
+  }, []);
 
   const isEmailValid = useMemo(() => {
     if (!email) {
       return false;
     }
-    return email.subject && email.subject.length > 0 && ((email.to && email.to.length > 0) || (email.cc && email.cc.length > 0) || (email.bcc && email.bcc.length > 0));
+    return (
+      email.subject &&
+      email.subject.length > 0 &&
+      ((email.to && email.to.length > 0) ||
+        (email.cc && email.cc.length > 0) ||
+        (email.bcc && email.bcc.length > 0))
+    );
   }, [email]);
+
+  const sendEmail = useCallback(async () => {
+    await mqttService.publish("office/outbox", email);
+    setEmail({
+      from: "alin@huna2.com",
+      subject: "",
+      bcc: [],
+      body: "",
+      cc: [],
+      to: [],
+    });
+  }, [email, setEmail]);
 
   return (
     <Flex
@@ -96,9 +131,6 @@ export default function AIOffice() {
                         flexDirection={"row"}
                         flexWrap={"wrap"}
                       >
-                        <Box textStyle="xs" flex="1">
-                          Sent: {item.sentDate?.toLocaleString()}
-                        </Box>
                         <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
@@ -148,9 +180,6 @@ export default function AIOffice() {
                         flexWrap={"wrap"}
                       >
                         <Box textStyle="xs" flex="1">
-                          Sent: {item.sentDate?.toLocaleString()}
-                        </Box>
-                        <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
                         <Box textStyle="xs" flex="1">
@@ -179,7 +208,11 @@ export default function AIOffice() {
       {/* Bottom Section: Fixed */}
       <Box display="flex" flexDirection={"column"}>
         <Text textStyle="lg">Send Email</Text>
-        <Box display={"flex"} flexDirection={{base: "column", lg: "row"}} flex="1">
+        <Box
+          display={"flex"}
+          flexDirection={{ base: "column", lg: "row" }}
+          flex="1"
+        >
           <Box p={4} display={"flex"} flexDirection={"column"} gap={4}>
             <Input
               value={email.subject}
@@ -194,7 +227,7 @@ export default function AIOffice() {
               collection={allEmailsListCollection}
               size="sm"
               value={email.to}
-              onValueChange={e => setEmail(s => ({...s, to: e.value}))}
+              onValueChange={(e) => setEmail((s) => ({ ...s, to: e.value }))}
             >
               <Select.HiddenSelect />
               <Select.Control>
@@ -224,7 +257,7 @@ export default function AIOffice() {
               collection={allEmailsListCollection}
               size="sm"
               value={email.cc}
-              onValueChange={e => setEmail(s => ({...s, cc: e.value}))}
+              onValueChange={(e) => setEmail((s) => ({ ...s, cc: e.value }))}
             >
               <Select.HiddenSelect />
               <Select.Control>
@@ -254,7 +287,7 @@ export default function AIOffice() {
               collection={allEmailsListCollection}
               size="sm"
               value={email.bcc}
-              onValueChange={e => setEmail(s => ({...s, bcc: e.value}))}
+              onValueChange={(e) => setEmail((s) => ({ ...s, bcc: e.value }))}
             >
               <Select.HiddenSelect />
               <Select.Control>
@@ -280,10 +313,30 @@ export default function AIOffice() {
             </Select.Root>
           </Box>
           <Box p={4} flex="1" display={"flex"} flexDir={"column"}>
-            <Textarea flex="1" value={email.body} onChange={e => setEmail(s => ({...s, body: e.target.value}))} autoresize placeholder="Body" />
+            <Textarea
+              flex="1"
+              value={email.body}
+              onChange={(e) =>
+                setEmail((s) => ({ ...s, body: e.target.value }))
+              }
+              autoresize
+              placeholder="Body"
+            />
           </Box>
-          <Box p={4} display="flex" flexDir={"column"} justifyContent={"center"}>
-            <Button disabled={!isEmailValid} width="100%" flex="1">Send</Button>
+          <Box
+            p={4}
+            display="flex"
+            flexDir={"column"}
+            justifyContent={"center"}
+          >
+            <Button
+              onClick={sendEmail}
+              disabled={!isEmailValid}
+              width="100%"
+              flex="1"
+            >
+              Send
+            </Button>
           </Box>
         </Box>
       </Box>

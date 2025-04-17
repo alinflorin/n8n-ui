@@ -10,6 +10,8 @@ export const env = {
     API: window.location.href.includes("n8n.internal.huna2.com") ? '/webhook' : `https://n8n.internal.huna2.com/webhook`,
     AUTH_USER: (import.meta.env.VITE_AUTH_USER|| w.env.AUTH_USER) as string,
     AUTH_PASSWORD: (import.meta.env.VITE_AUTH_PASSWORD || w.env.AUTH_PASSWORD) as string,
+    MQTT_HOST: "mosquitto.internal.huna2.com",
+    MQTT_PORT: 443
 };
 
 export default env;

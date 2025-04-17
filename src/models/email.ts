@@ -5,5 +5,4 @@ export interface Email {
     bcc?: string[];
     body?: string;
     subject: string;
-    sentDate?: Date;
 }
