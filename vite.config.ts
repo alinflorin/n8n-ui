@@ -49,19 +49,19 @@ export default defineConfig(({ command }) => {
     plugins: [react(), tsconfigPaths(), basicSsl(), ...prodOnlyPlugins],
     build: {
       minify: true,
-      rollupOptions: {
-        output: {
-          manualChunks: (id) => {
-            if (id.includes("node_modules")) {
-              return "vendor";
-            }
-            const match = /src\/routes\/([\w-]+)\//.exec(id);
-            if (match) {
-              return match[1];
-            }
-          },
-        },
-      },
+      // rollupOptions: {
+      //   output: {
+      //     manualChunks: (id) => {
+      //       if (id.includes("node_modules")) {
+      //         return "vendor";
+      //       }
+      //       const match = /src\/routes\/([\w-]+)\//.exec(id);
+      //       if (match) {
+      //         return match[1];
+      //       }
+      //     },
+      //   },
+      // },
     },
   };
 });
