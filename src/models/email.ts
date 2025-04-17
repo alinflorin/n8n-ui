@@ -5,4 +5,6 @@ export interface Email {
     bcc?: string[];
     body?: string;
     subject: string;
+    received?: string;
+    sent?: string;
 }

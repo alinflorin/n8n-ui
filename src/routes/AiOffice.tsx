@@ -44,8 +44,15 @@ export default function AIOffice() {
       const emails = await n8nService.getAllEmails();
       setAllEmails(emails);
 
+      const inbox = await n8nService.getInbox("alin@huna2.com");
+      setInbox(inbox);
+
+      const log = await n8nService.getLog();
+      setLog(log);
+
       await mqttService.connect();
       await mqttService.subscribe("office/outbox", 2);
+      await mqttService.subscribe("office/inboxes/alin@huna2.com", 2);
 
       mqttService.consumeMessages(async (topic, msg, err) => {
         if (!msg && err) {
@@ -53,11 +60,13 @@ export default function AIOffice() {
           return;
         }
         if (topic === "office/outbox") {
+          (msg as Email).sent = new Date().toISOString();
           setLog((st) => [...st, msg as Email]);
           return;
         }
         if (topic === "office/inboxes/alin@huna2.com") {
-          setInbox((st) => [...st, msg as Email]);
+          (msg as Email).received = new Date().toISOString();
+          setInbox((st) => [msg as Email, ...st]);
           return;
         }
       });
@@ -132,6 +141,9 @@ export default function AIOffice() {
                         flexWrap={"wrap"}
                       >
                         <Box textStyle="xs" flex="1">
+                          Sent: {item.sent}
+                        </Box>
+                        <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
                         <Box textStyle="xs" flex="1">
@@ -179,6 +191,9 @@ export default function AIOffice() {
                         flex="1"
                         flexWrap={"wrap"}
                       >
+                        <Box textStyle="xs" flex="1">
+                          Received: {item.received}
+                        </Box>
                         <Box textStyle="xs" flex="1">
                           From: {item.from}
                         </Box>
