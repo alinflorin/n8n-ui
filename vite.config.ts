@@ -52,6 +52,9 @@ export default defineConfig(({ command }) => {
       rollupOptions: {
         output: {
           manualChunks: (id) => {
+            if (id.includes("node_modules")) {
+              return "vendor";
+            }
             const match = /src\/routes\/([\w-]+)\//.exec(id);
             if (match) {
               return match[1];
