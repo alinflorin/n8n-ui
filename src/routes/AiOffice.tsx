@@ -109,7 +109,6 @@ export default function AIOffice() {
       direction="column"
       flex="1"
       p={4}
-      height="100%" // Allow it to fill the available space within the Outlet
       overflow="auto" // Enable scrolling on the container level
     >
       {/* Top Section: Flex vertically split */}
