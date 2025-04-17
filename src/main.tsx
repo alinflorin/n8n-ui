@@ -5,9 +5,17 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import NotFound from "./NotFound.tsx";
 import Home from "./Home.tsx";
 import { Provider } from "@/components/ui/provider";
-import AiOffice from "./AiOffice.tsx";
+import AiOffice from "./pages/AiOffice.tsx";
+import { setupAxiosDevRequestInterceptor } from "./interceptors/basic-auth-interceptor.ts";
+
+if (import.meta.env.DEV) {
+  setupAxiosDevRequestInterceptor();
+}
 
 const calculateBasePath = () => {
+  if (import.meta.env.DEV) {
+    return "/";
+  }
   const pathname = window.location.pathname;
   
   // You can modify the number of parts here if the base path structure is always known

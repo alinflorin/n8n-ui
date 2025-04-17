@@ -10,13 +10,14 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Accordion } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
-import { Email } from "./models/email";
+import { useEffect, useMemo, useState } from "react";
+import { Email } from "../models/email";
 import { Input } from "@chakra-ui/react";
-import { Recipient } from "./models/recipient";
+import { Recipient } from "../models/recipient";
+import n8nService from "../services/n8n-service";
 
 export default function AIOffice() {
-  const [log, setLog] = useState<Email[]>([
+  const [log] = useState<Email[]>([
     {
       from: "alin@huna2.com",
       to: ["alex@huna2.com"],
@@ -28,7 +29,7 @@ export default function AIOffice() {
     },
   ]);
 
-  const [inbox, setInbox] = useState<Email[]>([
+  const [inbox] = useState<Email[]>([
     {
       from: "alin@huna2.com",
       to: ["alex@huna2.com"],
@@ -41,10 +42,7 @@ export default function AIOffice() {
   ]);
 
   const [allEmails, setAllEmails] = useState<Recipient[]>([
-    {
-      name: "Alin",
-      email: "alin@huna2.com",
-    },
+
   ]);
 
   const allEmailsListCollection = useMemo(() => {
@@ -62,6 +60,21 @@ export default function AIOffice() {
     cc: [],
     to: [],
   });
+
+  useEffect(() => {
+    (async () => {
+      const emails = await n8nService.getAllEmails();
+      setAllEmails(emails);
+    })();
+  }, []);
+
+
+  const isEmailValid = useMemo(() => {
+    if (!email) {
+      return false;
+    }
+    return email.subject && email.subject.length > 0 && ((email.to && email.to.length > 0) || (email.cc && email.cc.length > 0) || (email.bcc && email.bcc.length > 0));
+  }, [email]);
 
   return (
     <Flex
@@ -280,7 +293,7 @@ export default function AIOffice() {
             <Textarea flex="1" value={email.body} onChange={e => setEmail(s => ({...s, body: e.target.value}))} autoresize placeholder="Body" />
           </Box>
           <Box p={4} display="flex" flexDir={"column"} justifyContent={"center"}>
-            <Button width="100%" flex="1">Send</Button>
+            <Button disabled={!isEmailValid} width="100%" flex="1">Send</Button>
           </Box>
         </Box>
       </Box>
